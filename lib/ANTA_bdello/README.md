@@ -1,10 +1,7 @@
 # ANTA_bdello Files description
 
-The project compares metrics of genetic diversity from 2244 COI sequences between Antarctic and
+The project compares metrics of genetic diversity from 2242 COI sequences between 9 Antarctic and 14
 non-Antarctic bdelloid species.
-Two dataset were used: the main one had nine well-sampled species
-and the secondary one had 14 species with less than 50 COI sequences each.
-The file "DATA for ANALYSES 20200610.csv" is the dataset used for the main analyses and the main
-plots, with R script reported in "anta analyses.R".
-The file "minor dataset.csv" is the dataset used for the secondary,
-additional analyses and the relative plots, with R script reported in "minor dataset analyses.R".
+
+-The file "HAPLO whole.phy" is the alignment at the haplotype level to obtain the phylogenetic tree in "HAPLO whole BEAST.tree"
+-The file "anda data.csv" is the dataset used for the statistical analyses and to obtain the plots, with R script reported in "anta analyses.R"
