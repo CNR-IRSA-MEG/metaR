@@ -1,0 +1,92 @@
+---
+title: "pivot_filtering"
+author: "Diego Brambilla"
+date: "10/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries, echo=FALSE}
+library(tidyverse)
+library(readxl)
+library(knitr)
+library(openxlsx)
+```
+
+
+```{r filter-family, echo=FALSE}
+#setting current directory as constant
+BASE_GLOB = '.'
+
+#importing excel spreadsheet data
+pivot_family <- read_csv(
+  'LakeVarese_MetaPhlAn_family_scaling.csv',
+  col_names = TRUE,
+  col_types =cols(
+    .default = col_double(),
+    Category = col_character()
+  )
+) %>%
+#Turn the table long (placing the scaled value in a column called "relab")
+  pivot_longer(-Category,
+               names_to= "family",
+               values_to= "relab") %>%
+#Filter out all variables that contain "noname" (unclassified taxa)
+#Actually we like nonames because you can still say they belong to the Phylum we are looking for
+# filter(!grepl(".*noname*", family)) %>%
+#Filter out all variables that contain "unclassified" (unclassified taxa)
+  filter(!grepl(".*unclassified*", family)) %>%
+#Filter out selected variables (Archaea, Eukarya and Viruses families)
+    filter(!family %in% c("Baculoviridae", "Eimeriidae", "Methanobacteriaceae", "Methanoregulaceae", "Methanosaetaceae", "Methanosarcinaceae" , "Methanospirillaceae", "Myoviridae" , "Nitrosopumilaceae", "Partitiviridae", "Podoviridae", "Potyviridae", "Siphoviridae", "Viruses_noname")) %>% 
+#Re-calculate relative abundance  
+  group_by(Category) %>%
+  mutate(relab = relab/sum(relab) * 100) %>%
+  ungroup() %>%
+#Re-convert to wide format and save to excel format (this is the way my colleagues like)  
+  pivot_wider(
+    names_from = "Category",
+    values_from = "relab"
+  ) %>%
+  write.xlsx('LakeVarese_MetaPhlAn_filtered_family_scaling.xlsx')
+  
+
+```
+
+```{r filter-genus, echo=FALSE}
+
+#importing excel spreadsheet data
+pivot_genus <- read_csv(
+  'LakeVarese_MetaPhlAn_genus_scaling.csv',
+  col_names = TRUE,
+  col_types =cols(
+    .default = col_double(),
+    Category = col_character()
+  )
+)%>%
+#Turn the table long (placing the scaled value in a column called "relab")
+  pivot_longer(-Category,
+               names_to= "genus",
+               values_to= "relab") %>%
+#Filter out all variables that contain "noname" (unclassified taxa)
+#Actually we like nonames because you can still say they belong to the Phylum we are looking for
+# filter(!grepl(".*noname*", genus)) %>%
+#Filter out all variables that contain "unclassified" (unclassified taxa)
+  filter(!grepl(".*unclassified*", genus)) %>%  
+#Filter out selected variables (Archaea, Eukarya and Viruses genera)
+    filter(!genus %in% c("Alphabaculovirus", "Alphacryptovirus", "Bppunalikevirus", "C2likevirus" , "Candidatus_Nitrosoarchaeum" , "Eimeria", "I3likevirus", "Methanobacterium", "Methanobrevibacter", "Methanomethylovorans", "Methanoregulaceae_unclassified", "Methanosaeta", "Methanosarcina", "Methanospirillum" ,"Nitrosopumilaceae_unclassified" , "Nitrosopumilus", "Potyvirus", "Viruses_noname", "Yualikevirus")) %>%
+#Re-calculate relative abundance  
+  group_by(Category) %>%
+  mutate(relab = relab/sum(relab) * 100) %>%
+  ungroup() %>%
+#Re-convert to wide format and save to excel format (this is the way my colleagues like)  
+  pivot_wider(
+    names_from = "Category",
+    values_from = "relab"
+  ) %>%
+  write.xlsx('LakeVarese_MetaPhlAn_filtered_genus_scaling.xlsx')
+  
+```
