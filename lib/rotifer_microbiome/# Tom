@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------------
+# Tom 2
+
+# Instal anaconda
+bash Anaconda-latest-Linux-x86_64.sh
+
+# Install pysradb
+conda install -c bioconda pysradb
+
+
+# Start with data download
+cd Desktop/sratoolkit.2.11.1-ubuntu64/bin
+
+declare -a StringArray=("SRR11300482" "SRR11300478" "SRR11300474" "ERR4314572" "ERR4314573" "ERR4314575" "ERR4314576" "ERR4314589" "ERR4314592" "ERR4314593" "ERR4314678" "ERR4314679" "ERR4314680" "ERR4314681" "ERR4314682" "ERR4314683" "ERR4314865" "ERR4314864" "ERR4314863" "ERR4314862" "ERR4314861" "ERR4314860" "ERR4314859" "ERR4314672" "ERR4314673" "ERR4314674" "ERR4314675" "ERR4314676" "ERR4314677" "ERR4314684" "ERR4314685" "ERR4314686" "ERR4314687" "ERR4314688" "ERR4314689" "ERR4314858" "ERR4314857" "ERR4314856" "ERR4314855" "ERR4314854" "ERR4314614" "ERR4314615" "ERR4314616" "ERR4314655" "ERR4314656" "ERR4314657" "ERR4314658" "ERR4314659" "ERR4314660" "ERR4314663" "ERR4314670" "ERR4314671" "ERR4314690" "ERR4314691" "ERR4314692" "ERR4314693" "ERR4314694" "ERR4314695" "ERR4314696" "ERR4314697" "ERR4314698" "ERR4314699" "ERR4314700" "ERR4314701" "ERR4314702" "ERR4314703" "ERR4314704" "ERR4314705" "ERR4314706" "ERR4314707" "ERR4314896" "ERR4314895" "ERR4314894" "ERR4314893" "ERR4314892" "ERR4314891")
+
+for val in "${StringArray[@]}"
+do
+mkdir /home/ambiun1091663/Desktop/Dati_Ester/"$val"
+prefetch -v "$val"
+fastq-dump --outdir /home/ambiun1091663/Desktop/Dati_Ester/"$val"  --split-files /home/ambiun1091663/ncbi/public/sra/"$val".sra
+
+pysradb metadata --saveto /home/ambiun1091663/Desktop/Dati_Ester/"$val"/"$val"_metadata.tsv --detailed "$val" 
+
+done
